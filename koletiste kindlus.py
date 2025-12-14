@@ -1,17 +1,19 @@
 import pygame
 import pygame_gui
-
 pygame.init()
 
 ekraan = pygame.display.set_mode([640, 480])
 manager = pygame_gui.UIManager([640, 480])
 pygame.display.set_caption("mäng")
-ekraan.fill([0,0,0])
+
 heli = pygame.mixer.Sound("tp3.wav")
 heli.set_volume(0.5)
 kanal=pygame.mixer.Channel(0)
 kell = pygame.time.Clock()
 kuju=pygame.image.load("kuju.png")
+kaamera_x=0
+kaamera_vasak=200
+kaamera_parem=440
 kuju_x=580/2
 kuju_y=300
 kuju_x_kiirus=0
@@ -61,6 +63,7 @@ def mine_pausi():
     nupp1.show()
     nupp3.show()
     pygame.mixer.music.pause()
+    
 def lahku_pausist():
     slider.hide()
     kanal.unpause()
@@ -164,6 +167,14 @@ while mäng_töötab:
         kuju_y_kiirus += gravitatsioon * dt 
         kuju_y += kuju_y_kiirus * dt
         kuju_x+=kuju_x_kiirus*dt
+        
+        if kuju_x - kaamera_x > kaamera_parem:
+            kaamera_x = kuju_x - kaamera_parem
+
+
+        if kuju_x - kaamera_x < kaamera_vasak:
+            kaamera_x = kuju_x - kaamera_vasak
+
         if kuju_x>640:
             kuju_x=-kuju_w
         if kuju_x<-kuju_w:
@@ -177,7 +188,7 @@ while mäng_töötab:
         
     
     
-    ekraan.fill([255, 255, 255])
+    ekraan.fill((255,255,255))
     
     if olek=="mäng" and kuju_x+kuju_w>640:
         ekraan.blit(kuju,[kuju_x,kuju_y])
@@ -187,6 +198,10 @@ while mäng_töötab:
         ekraan.blit(kuju,[kuju_x,kuju_y])
     if olek=="mäng" and paus:
         ekraan.blit(pealkiri, (0,0))
+    if olek=="menüü":
+        ekraan.blit(pealkiri, (0,0))
+        
+    
         
             
 
@@ -196,7 +211,6 @@ while mäng_töötab:
     manager.draw_ui(ekraan)
     pygame.display.flip()
 pygame.quit()
-          
                  
 
 
@@ -210,6 +224,7 @@ pygame.quit()
                
                     
             
+
 
 
 
