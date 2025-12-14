@@ -44,7 +44,31 @@ teade.hide()
 nupp3.hide()
 nupp4.hide()
 nupp5.hide()
-
+def mine_pausi():
+    slider.show()
+    heli.stop()
+    nupp1.show()
+    nupp3.show()
+    heli.stop()
+def lahku_pausist():
+    slider.hide()
+    heli.play()
+    nupp1.hide()
+    nupp3.hide()
+    nupp4.hide()
+    nupp5.hide()
+    teade.hide()
+    nupp2.hide()    
+def mine_mängu():
+    nupp7.hide()
+    nupp6.hide()
+    slider.hide()
+    nupp1.hide()
+    nupp3.hide()
+    nupp4.hide()
+    nupp5.hide()
+    teade.hide()
+    
 while mäng_töötab:
     
     dt = kell.tick(60) / 1000
@@ -58,19 +82,9 @@ while mäng_töötab:
             if e.key==pygame.K_ESCAPE and olek=="mäng":
                 paus= not paus 
                 if paus:
-                    slider.show()
-                    heli.stop()
-                    nupp1.show()
-                    nupp3.show()
-                    heli.stop()
+                    mine_pausi()
                 else:
-                    slider.hide()
-                    heli.play()
-                    nupp1.hide()
-                    nupp3.hide()
-                    nupp4.hide()
-                    nupp5.hide()
-                    
+                    lahku_pausist()
                     
         if e.type==pygame_gui.UI_BUTTON_PRESSED:
             if e.ui_element==nupp1:
@@ -99,9 +113,7 @@ while mäng_töötab:
             elif e.ui_element==nupp7:
                 olek="mäng"
                 paus=False
-                nupp6.hide()
-                nupp7.hide()
-                heli.play()
+                mine_mängu()
                 
             
         
@@ -114,9 +126,9 @@ while mäng_töötab:
                  
 
         manager.process_events(e)
-        ekraan.fill([255, 255, 255])
-        if paus:
-            ekraan.blit(pealkiri, (250,200))
+    ekraan.fill([255, 255, 255])
+    if olek=="mäng" and paus:
+        ekraan.blit(pealkiri, (250,200))
             
 
            
@@ -125,7 +137,6 @@ while mäng_töötab:
     manager.draw_ui(ekraan)
     pygame.display.flip()
 pygame.quit()
-
           
                  
 
@@ -140,3 +151,4 @@ pygame.quit()
                
                     
             
+
