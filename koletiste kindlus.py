@@ -1,10 +1,11 @@
 import pygame
 import pygame_gui
 pygame.init()
-
+#***üldine***
 ekraan = pygame.display.set_mode([640, 480])
 manager = pygame_gui.UIManager([640, 480])
 pygame.display.set_caption("mäng")
+#***elemendid mõistatuse jaoks***
 sisu = pygame_gui.elements.UITextBox("""Mis aastal ehitati see kindlus?
 (Vihje leiad siit toast)
 
@@ -26,6 +27,7 @@ sulge.hide()
 a.hide()
 b.hide()
 c.hide()
+#elemendid võitlusmängu jaoks
 hüppab = False
 max_hüppe_aeg = 0.25   
 hüppe_aeg = 0
@@ -38,6 +40,7 @@ heli.set_volume(0.2)
 heli2.set_volume(0.2)
 kanal=pygame.mixer.Channel(0)
 kell = pygame.time.Clock()
+#***pildid***
 kuju=pygame.image.load("tegelane.png")
 taust1=pygame.image.load("voitlus_taust.png")
 rünnak=pygame.image.load("rünnak.png")
@@ -49,11 +52,10 @@ koll_parem = pygame.image.load("roheline_koll.png")
 koll_vasak = pygame.transform.flip(koll_parem, True, False)
 rünnaku_cooldown = 0.3
 rünnaku_timer = 0
-
-
 luukere_parem = pygame.image.load("luukere.png")
 luukere_vasak = pygame.transform.flip(luukere_parem, True, False)
 LEVELI_LÕPP = 3000
+#***tegelase füüsika***
 taust_w = taust1.get_width()
 kaamera_x=0
 kuju_x=0
@@ -67,8 +69,9 @@ kuju_baaskiirus=400
 kuju_y=maapind
 praegune_tegelase_pilt=kuju
 rünnak_olek=False
+#***vaenlase klass***
 class Vaenlane:
-    def __init__(self, x, y, sprite_parem, sprite_vasak,max_elu=3):
+    def __init__(self, x, y, sprite_parem, sprite_vasak,max_elu=3):#omadused
         self.sprite_parem = sprite_parem
         self.sprite_vasak = sprite_vasak
         self.sprite = sprite_parem
@@ -92,7 +95,7 @@ class Vaenlane:
         self.ründe_cooldown = 4
         self.ründe_timer = 0
 
-    def update(self, dt,mängija_rect):
+    def update(self, dt,mängija_rect):#liigub edasi-tagasi
         if not self.elus:
             return
 
@@ -109,7 +112,7 @@ class Vaenlane:
 
         return False
 
-    def saa_viga(self, kogus=1):
+    def saa_viga(self, kogus=1):#saab viga
         if not self.elus:
             return
 
@@ -117,7 +120,7 @@ class Vaenlane:
         if self.elu <= 0:
             self.elus = False
 
-    def draw(self, ekraan, kaamera_x):
+    def draw(self, ekraan, kaamera_x):#elud
         if not self.elus:
             return
 
@@ -140,7 +143,7 @@ class Vaenlane:
             (self.rect.x - kaamera_x, self.rect.y - 10, riba_laius * elu_suhe, riba_korgus)
         )
 
-            
+#***vaenlaste list***            
 vaenlased = [
     Vaenlane(500, maapind, koll_parem, koll_vasak),
     Vaenlane(900, maapind, luukere_parem, luukere_vasak,max_elu=1),
@@ -151,7 +154,7 @@ vaenlased = [
     Vaenlane(2500, maapind, luukere_parem, luukere_vasak,max_elu=3),
     Vaenlane(2000, maapind, koll_parem, koll_vasak,max_elu=5)]
 
-
+#***mõned elemendid veel***
 mäng_töötab = True
 paus=False 
 pealkiri= pygame.image.load("tiitel.png")
@@ -178,7 +181,7 @@ nupp6=pygame_gui.elements.UIButton(pygame.Rect((240,300),(120,50)),"exit",manage
 nupp7=pygame_gui.elements.UIButton(pygame.Rect((240,200),(120,50)),"start",manager)
 
 teade=pygame_gui.elements.UITextBox("Autorid:Holger,Lola,Eno",((420, 80), (460, 150)),manager)
-
+#***siin peidan kõik ui elemendid ära***
 raamat.hide()
 slider.hide()
 nupp1.hide()
@@ -227,6 +230,7 @@ def mine_mängu():
     nupp5.hide()
     teade.hide()
     kanal.play(heli)
+#***mängu tsükkel***
 while mäng_töötab:
     
     dt = kell.tick(60) / 1000
@@ -234,7 +238,7 @@ while mäng_töötab:
         if e.type == pygame.QUIT:
             mäng_töötab = False
        
-
+#liikumine ja pausimenüü
         if e.type == pygame.KEYDOWN:
             
             if e.key==pygame.K_ESCAPE and olek=="mäng" or e.key==pygame.K_ESCAPE and olek=="mõistatus":
@@ -258,7 +262,7 @@ while mäng_töötab:
                 heli2.play()
                 
             
-                
+#liikumine                
                 
         elif e.type==pygame.KEYUP:
             if e.key==pygame.K_LEFT and olek=="mäng" and not paus:
@@ -274,7 +278,7 @@ while mäng_töötab:
         else:
             praegune_tegelase_pilt = kuju
         rünnaku_timer -= dt
-    
+#gui nupud    
         if e.type==pygame_gui.UI_BUTTON_PRESSED:
             if e.ui_element==nupp1:
                 teade_nähtav=True
@@ -345,11 +349,13 @@ while mäng_töötab:
         klahvid = pygame.key.get_pressed()
 
         kuju_x_kiirus = 0
+        
         if klahvid[pygame.K_LEFT]:
             kuju_x_kiirus -= kuju_baaskiirus
         if klahvid[pygame.K_RIGHT]:
             kuju_x_kiirus += kuju_baaskiirus
         mängija_rect = pygame.Rect(kuju_x, kuju_y, kuju_w, kuju_h)
+        #mängija elud
         for v in vaenlased:
             lõi = v.update(dt, mängija_rect)
             if lõi:
@@ -363,7 +369,7 @@ while mäng_töötab:
             
         
         
-
+#mängija füüsika 2
         kuju_y_kiirus += gravitatsioon * dt 
         kuju_y += kuju_y_kiirus * dt
         kuju_x+=kuju_x_kiirus*dt
@@ -379,7 +385,7 @@ while mäng_töötab:
             ründe_rect = pygame.Rect(
                 kuju_x + kuju_w,kuju_y,40,kuju_h)
         rünnaku_timer -= dt
-
+#ründamine
         if rünnak_olek and rünnaku_timer <= 0:
             rünnaku_timer = rünnaku_cooldown
             for v in vaenlased:
@@ -431,8 +437,7 @@ while mäng_töötab:
     
         
         
-
-        
+ #olekud, kaotus ja lõpp   
     if olek == "mäng":
         for v in vaenlased:
             v.draw(ekraan, kaamera_x)
@@ -479,6 +484,7 @@ pygame.quit()
                
                     
             
+
 
 
 
