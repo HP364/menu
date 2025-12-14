@@ -164,14 +164,15 @@ while mäng_töötab:
     
     
     ekraan.fill([255, 255, 255])
-    if olek=="mäng" and paus:
-        ekraan.blit(pealkiri, (250,200))
+   
     if olek=="mäng" and kuju_x+kuju_w>640:
         ekraan.blit(kuju,[kuju_x,kuju_y])
     if olek=="mäng" and kuju_x+kuju_w<0:
         ekraan.blit(kuju,[kuju_x,kuju_y])
     if olek=="mäng":
         ekraan.blit(kuju,[kuju_x,kuju_y])
+     if olek=="mäng" and paus:
+        ekraan.blit(pealkiri, (250,200))
         
             
 
@@ -195,5 +196,6 @@ pygame.quit()
                
                     
             
+
 
 
