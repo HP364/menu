@@ -9,6 +9,7 @@ pygame.display.set_caption("mäng")
 ekraan.fill([0,0,0])
 heli = pygame.mixer.Sound("tp3.wav")
 heli.set_volume(0.5)
+kanal=pygame.mixer.Channel(0)
 kell = pygame.time.Clock()
 kuju=pygame.image.load("kuju.png")
 kuju_x=580/2
@@ -56,13 +57,13 @@ nupp4.hide()
 nupp5.hide()
 def mine_pausi():
     slider.show()
-    heli.stop()
+    kanal.pause()
     nupp1.show()
     nupp3.show()
-    heli.stop()
+    pygame.mixer.music.pause()
 def lahku_pausist():
     slider.hide()
-    heli.play()
+    kanal.unpause()
     nupp1.hide()
     nupp3.hide()
     nupp4.hide()
@@ -78,7 +79,7 @@ def mine_mängu():
     nupp4.hide()
     nupp5.hide()
     teade.hide()
-    heli.play()
+    kanal.play(heli)
 while mäng_töötab:
     
     dt = kell.tick(60) / 1000
@@ -100,8 +101,9 @@ while mäng_töötab:
                 kuju_x_kiirus+=-kuju_baaskiirus
             if e.key==pygame.K_RIGHT and olek=="mäng" and not paus:
                 kuju_x_kiirus+=kuju_baaskiirus
-            if e.key==pygame.K_SPACE and olek=="mäng" and not paus:
+            if e.key==pygame.K_SPACE and olek=="mäng" and not paus and on_ground:
                 kuju_y_kiirus=-kuju_baaskiirus
+                on_ground=False
         elif e.type==pygame.KEYUP:
             if e.key==pygame.K_LEFT and olek=="mäng" and not paus:
                 kuju_x_kiirus-=-kuju_baaskiirus
@@ -150,6 +152,15 @@ while mäng_töötab:
 
         manager.process_events(e)
     if olek=="mäng" and not paus:
+        
+        klahvid = pygame.key.get_pressed()
+
+        kuju_x_kiirus = 0
+        if klahvid[pygame.K_LEFT]:
+            kuju_x_kiirus -= kuju_baaskiirus
+        if klahvid[pygame.K_RIGHT]:
+            kuju_x_kiirus += kuju_baaskiirus
+
         kuju_y_kiirus += gravitatsioon * dt 
         kuju_y += kuju_y_kiirus * dt
         kuju_x+=kuju_x_kiirus*dt
@@ -160,19 +171,22 @@ while mäng_töötab:
         if kuju_y>maapind:
             kuju_y=maapind
             kuju_y_kiirus=0
+            on_ground=True
+        else:
+            on_ground=False
         
     
     
     ekraan.fill([255, 255, 255])
-   
+    
     if olek=="mäng" and kuju_x+kuju_w>640:
         ekraan.blit(kuju,[kuju_x,kuju_y])
     if olek=="mäng" and kuju_x+kuju_w<0:
         ekraan.blit(kuju,[kuju_x,kuju_y])
     if olek=="mäng":
         ekraan.blit(kuju,[kuju_x,kuju_y])
-     if olek=="mäng" and paus:
-        ekraan.blit(pealkiri, (250,200))
+    if olek=="mäng" and paus:
+        ekraan.blit(pealkiri, (0,0))
         
             
 
@@ -196,6 +210,7 @@ pygame.quit()
                
                     
             
+
 
 
 
